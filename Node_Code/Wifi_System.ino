@@ -1,17 +1,15 @@
 
-void changeComCode() {
-  String str = "Starting";
-
-  wc.SetComSite(str);
+void changeComCode() {//update the log site
+  wc.SetComSite(Grapher());
 }
 
-bool TryGetData(String sv) {
+bool TryGetData(String sv) {//try to ge return from server
   GPData.begin("http://" + sv + ":" + String(servport) + OpenTest);
   int ReqCode = GPData.GET();
-  Serial.println("Try Get Data from: " + String(ReqCode) + " " + sv + ":" + String(servport) + OpenTest);
+  if(Debug){Serial.println("Try Get Data from: " + String(ReqCode) + " " + sv + ":" + String(servport) + OpenTest);}
   if (ReqCode > 0) {
     String c = GPData.getString();
-    Serial.println(c);
+    if(Debug){Serial.println(c);}
     if (c == "Success") {
       serv = sv;
       return true;
@@ -21,8 +19,8 @@ bool TryGetData(String sv) {
   return false;
 }
 
-void ScanNet() {
-  for (int i = 243; i < 256; i++) {
+void ScanNet() {//scan the entire network to find the server
+  for (int i = 13; i < 256; i++) {
     String ip = GetMyIp(i);
     if (TryGetData(ip)) {
       break;
@@ -31,7 +29,7 @@ void ScanNet() {
   }
 }
 
-String GetMyIp(int ipend) {
+String GetMyIp(int ipend) {//return the actual ip
   String ipget = WiFi.localIP().toString();
   int ip1 = ipget.substring(0, ipget.indexOf(".")).toInt();
   ipget = ipget.substring(ipget.indexOf(".") + 1);
